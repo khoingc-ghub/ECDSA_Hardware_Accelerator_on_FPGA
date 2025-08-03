@@ -82,6 +82,11 @@ module knuth_multiplication (
     .S(sum);
     };
 endmodule
+if (i == a <>  ){
+    
+
+};
     // BKA 16-bit is simulated within COMBINE state for final alignment
 endmodule
+
 
