@@ -74,20 +74,14 @@ module knuth_multiplication (
     end
 
     // Brent-Kung Adder 32-bit (simplified as a function)
-    function [31:0] brent_kung_adder_32;
-        input [31:0] a, b;
-        reg [31:0] sum;
-        reg carry;
-        integer i;
-        begin
-            carry = 1'b0;
-            for (i = 0; i < 32; i = i + 1) begin
-                sum[i] = a[i] ^ b[i] ^ carry;
-                carry = (a[i] & b[i]) | (carry & (a[i] ^ b[i]));
-            end
-            brent_kung_adder_32 = sum;
-        end
-    endfunction
-
+   module adder256()
+{
+    .a(A);
+    .b(B);
+    .cin(Ci);
+    .S(sum);
+    };
+endmodule
     // BKA 16-bit is simulated within COMBINE state for final alignment
 endmodule
+
