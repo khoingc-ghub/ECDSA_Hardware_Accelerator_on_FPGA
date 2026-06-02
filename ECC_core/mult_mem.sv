@@ -67,9 +67,9 @@ module mult_mem #(
     output logic [16:0] Nseg_q_o [16]
 );
 
-    // =====================================================
+    // ====
     // memory banks
-    // =====================================================
+    // ====
     logic [16:0] Aseg_mem [DEPTH][16];
     logic [16:0] Sseg_mem [DEPTH][16];
     logic [16:0] Nseg_mem [16];
@@ -81,9 +81,9 @@ module mult_mem #(
 
     integer i, j, w, t_s;
 
-    // -----------------------------------------------------
+    // ----
     // mem_valid
-    // -----------------------------------------------------
+    // ----
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n)
             mem_valid <= 1'b0;
@@ -93,11 +93,11 @@ module mult_mem #(
             mem_valid <= 1'b1;
     end
 
-    // -----------------------------------------------------
+    // ----
     // wr_cnt / busy
     // busy của mem: đã nạp đủ DEPTH slot
     // top hiện không dùng tín hiệu này để chặn chạy
-    // -----------------------------------------------------
+    // ----
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             wr_cnt <= '0;
@@ -117,9 +117,9 @@ module mult_mem #(
         end
     end
 
-    // -----------------------------------------------------
+    // ----
     // WRITE A / N / A52 / B
-    // -----------------------------------------------------
+    // ----
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             for (i = 0; i < DEPTH; i = i + 1) begin
@@ -170,11 +170,11 @@ module mult_mem #(
         end
     end
 
-    // -----------------------------------------------------
+    // ----
     // WRITE S
     // - S ban đầu luôn bằng 0 cho mỗi phép nhân
     // - các vòng sau dùng S mới ghi ngược từ stage s_pack
-    // -----------------------------------------------------
+    // ----
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             for (i = 0; i < DEPTH; i = i + 1) begin
@@ -203,9 +203,9 @@ module mult_mem #(
         end
     end
 
-    // -----------------------------------------------------
+    // ----
     // READ cho AB và NQ
-    // -----------------------------------------------------
+    // ----
     genvar k;
     generate
         for (k = 0; k < 16; k = k + 1) begin : GEN_READ
@@ -236,9 +236,9 @@ module mult_mem #(
         end
     endgenerate
 
-    // -----------------------------------------------------
+    // ----
     // READ cho q_pipe
-    // -----------------------------------------------------
+    // ----
     always_comb begin
         A52_p = '0;
         B52_p = '0;
