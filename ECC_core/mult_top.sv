@@ -42,9 +42,9 @@ module mult_top #(
 
     integer i;
 
-    // =====================================================
+    // ====
     // internal control
-    // =====================================================
+    // ====
     logic        mem_valid;
     logic        mem_busy;
     logic        batch_done;
@@ -56,9 +56,9 @@ module mult_top #(
     logic        wait_first_spack;
     logic        first_spack_hit;
 
-    // =====================================================
+    // ====
     // mem address
-    // =====================================================
+    // ====
     logic [3:0]  x_ab_arr [16];
     logic [2:0]  y_ab_arr [16];
 
@@ -68,9 +68,9 @@ module mult_top #(
     logic [3:0] x_ab_r [16];
     logic [2:0] y_ab_r [16];
 
-    // =====================================================
+    // ====
     // mem outputs
-    // =====================================================
+    // ====
     logic [16:0] Aseg_o   [16];
     logic [16:0] Sseg_o   [16];
     logic [25:0] B_lo_o   [16];
@@ -89,22 +89,22 @@ module mult_top #(
     logic [1:0]  q_idx_in_r;
     logic [2:0]  q_y_in_r;
 
-    // =====================================================
+    // ====
     // q_pipe
-    // =====================================================
+    // ====
     logic        q_we;
     logic [25:0] Q_lo_q;
     logic [25:0] Q_hi_q;
 
-    // =====================================================
+    // ====
     // valid chain
-    // =====================================================
+    // ====
     logic val_d1, val_d2, val_d3, val_d4;
     logic val_add1, val_add2, val_addS;
 
-    // =====================================================
+    // ====
     // tag chain
-    // =====================================================
+    // ====
     logic [1:0] idx_nq;
     logic [2:0] y_nq;
 
@@ -117,15 +117,15 @@ module mult_top #(
     logic [1:0] idx_add1, idx_add2, idx_addS;
     logic [2:0] y_add1,   y_add2,   y_addS;
 
-    // =====================================================
+    // ====
     // DSP outputs
-    // =====================================================
+    // ====
     logic [47:0] p_nq_lo [16];
     logic [47:0] p_nq_hi [16];
 
-    // =====================================================
+    // ====
     // adder tree
-    // =====================================================
+    // ====
     logic [103:0] grp_lo_r [4];
     logic [103:0] grp_hi_r [4];
 
@@ -133,28 +133,28 @@ module mult_top #(
     logic [307:0] S_hi_r;
     logic [307:0] S_red_r;
 
-    // =====================================================
+    // ====
     // final pack / correction
-    // =====================================================
+    // ====
 
-    // =====================================================
+    // ====
     // s_pack write-back cho y = 0..3
-    // =====================================================
+    // ====
     logic         s_pack_we_r;
     logic [3:0]   s_pack_x_r;
     logic [2:0]   s_pack_y_r;
     logic [271:0] s_pack_data_r;
 
-    // =====================================================
+    // ====
     // batch done
-    // =====================================================
+    // ====
     logic all_done_comb;
     logic pipe_busy_comb;
     logic [2:0] result_count;
 
-    // -----------------------------------------------------
+    // ----
     // mem
-    // -----------------------------------------------------
+    // ----
     mult_mem #(
         .DEPTH(DEPTH)
     ) u_mem (
@@ -191,11 +191,11 @@ module mult_top #(
         .Nseg_q_o    (Nseg_q_o)
     );
 
-    // -----------------------------------------------------
+    // ----
     // q_pipe input register
     // Cắt đường cnt_reg -> mux/mem -> q_pipe DSP.
     // Sau block này, q_pipe chỉ nhận input từ FF gần nó.
-    // -----------------------------------------------------
+    // ----
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             q_in_valid_r <= 1'b0;
@@ -230,9 +230,9 @@ module mult_top #(
         end
     end
     
-    // -----------------------------------------------------
+    // ----
     // cnt / y control
-    // -----------------------------------------------------
+    // ----
     assign cnt_en          = mem_valid && !wait_first_spack;
     assign first_spack_hit = wait_first_spack && s_pack_we_r;
 
@@ -268,9 +268,9 @@ module mult_top #(
         end
     end
 
-    // -----------------------------------------------------
+    // ----
     // address comb
-    // -----------------------------------------------------
+    // ----
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             for (int k = 0; k < 16; k = k + 1) begin
@@ -298,9 +298,9 @@ module mult_top #(
         end
     end
 
-    // -----------------------------------------------------
+    // ----
     // q_pipe
-    // -----------------------------------------------------
+    // ----
     q_pipe u_q_pipe (
         .clk      (clk),
         .rst_n    (rst_n),
@@ -314,9 +314,9 @@ module mult_top #(
         .Q_hi     (Q_hi_q)
     );
 
-    // -----------------------------------------------------
+    // ----
     // DSP chain
-    // -----------------------------------------------------
+    // ----
             logic [47:0] p_ab_lo [16];
             logic [47:0] pcout_ab_lo [16];
             logic [47:0] p_ab_hi [16];
@@ -359,9 +359,9 @@ module mult_top #(
         end
     endgenerate
 
-    // -----------------------------------------------------
+    // ----
     // tag / valid / delay
-    // -----------------------------------------------------
+    // ----
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             idx_nq <= 2'd0; y_nq <= 3'd0;
@@ -450,9 +450,9 @@ module mult_top #(
         end
     end
 
-    // -----------------------------------------------------
+    // ----
     // ADDER TREE TIER 1
-    // -----------------------------------------------------
+    // ----
     always_ff @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
         grp_lo_r[0] <= '0; grp_lo_r[1] <= '0; grp_lo_r[2] <= '0; grp_lo_r[3] <= '0;
@@ -501,9 +501,9 @@ module mult_top #(
         end
     end
 
-    // -----------------------------------------------------
+    // ----
     // ADDER TREE TIER 2
-    // -----------------------------------------------------
+    // ----
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             S_lo_r <= '0;
@@ -522,10 +522,10 @@ module mult_top #(
         end
     end
 
-    // -----------------------------------------------------
+    // ----
     // ADDS
     // S = (((S_lo >> 26) + S_hi) >> 26)
-    // -----------------------------------------------------
+    // ----
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n)
             S_red_r <= '0;
@@ -535,10 +535,10 @@ module mult_top #(
             S_red_r <= (((S_lo_r >> 26) + S_hi_r) >> 26);
     end
 
-    // -----------------------------------------------------
+    // ----
     // final correction
     // lấy kết quả [255:0] sau hiệu chỉnh
-    // -----------------------------------------------------
+    // ----
     logic        final_job_fire;
 
     logic [271:0] final_s272_w;
@@ -627,11 +627,11 @@ module mult_top #(
         end
     end
 
-    // -----------------------------------------------------
+    // ----
     // S_PACK
     // y = 0..3 mới ghi ngược về mem
     // y = 4 chỉ xuất result, không ghi mem nữa
-    // -----------------------------------------------------
+    // ----
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             s_pack_we_r   <= 1'b0;
@@ -653,10 +653,10 @@ module mult_top #(
         end
     end
 
-    // -----------------------------------------------------
+    // ----
     // final result
     // y = 4 thì lấy s256_final_pack ra ngoài
-    // -----------------------------------------------------
+    // ----
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             result_o       <= '0;
@@ -686,9 +686,9 @@ module mult_top #(
         end
     end
 
-    // -----------------------------------------------------
+    // ----
     // batch_done + busy
-    // -----------------------------------------------------
+    // ----
     always_comb begin
 
     all_done_comb = (result_count == DEPTH);
