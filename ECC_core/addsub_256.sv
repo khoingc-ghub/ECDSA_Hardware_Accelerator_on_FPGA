@@ -113,27 +113,20 @@ module addsub_256 (
     output logic         done
 );
 
-    // =====================================================
-    // valid pipeline
-    // Giữ giống code cũ:
-    // start -> v1 -> v2 -> done
-    // S được chốt cùng chu kỳ done.
-    // Không bật v3 để khỏi lệch add_tag2 bên ecpa.
-    // =====================================================
     logic v1, v2, v3;
 
-    // =====================================================
+    // ====
     // Stage 1 regs
-    // =====================================================
+    // ====
     logic [15:0] fs_s1 [0:15];
     logic [15:0] fg_s1;
     logic [15:0] fp_s1;
     logic [255:0] IP_s1;
     logic         SUB_s1;
 
-    // =====================================================
+    // ====
     // Stage 2 regs
-    // =====================================================
+    // ====
     logic [15:0] fs_s2 [0:15];
     logic [15:0] ss_s2 [0:15];
     logic [16:1] fpc_s2;
@@ -141,9 +134,9 @@ module addsub_256 (
     logic [15:0] sp_s2;
     logic        SUB_s2;
 
-    // =====================================================
+    // ====
     // Stage 1 comb
-    // =====================================================
+    // ====
     logic [255:0] B_selected;
     logic [255:0] IP_selected;
 
@@ -178,9 +171,9 @@ module addsub_256 (
         end
     endgenerate
 
-    // =====================================================
+    // ====
     // Stage 2 comb
-    // =====================================================
+    // ====
     logic [15:0] ss_c [0:15];
     logic [15:0] sg_c;
     logic [15:0] sp_c;
@@ -220,9 +213,9 @@ module addsub_256 (
         end
     endgenerate
 
-    // =====================================================
+    // ====
     // Stage 3 comb
-    // =====================================================
+    // ====
     logic [16:1] spc_c;
     logic        sel_c;
     logic [15:0] final_sum_c [0:15];
@@ -252,9 +245,9 @@ module addsub_256 (
         end
     endgenerate
 
-    // =====================================================
+    // ====
     // Pipeline registers
-    // =====================================================
+    // ====
     integer k;
 
     always_ff @(posedge clk or negedge rst_n) begin
@@ -283,9 +276,9 @@ module addsub_256 (
             end
         end
         else begin
-            // --------------------------
+            // ----
             // Valid shift
-            // --------------------------
+            // ----
             v1   <= start;
             v2   <= v1;
             v3   <= v2;
@@ -293,9 +286,9 @@ module addsub_256 (
             // Giữ giống bản cũ để ecpa dùng add_tag2 không lệch
             done <= v2;
 
-            // --------------------------
+            // ----
             // Stage 1 register
-            // --------------------------
+            // ----
             if (start) begin
                 IP_s1  <= IP_selected;
                 SUB_s1 <= SUB;
@@ -308,9 +301,9 @@ module addsub_256 (
                 end
             end
 
-            // --------------------------
+            // ----
             // Stage 2 register
-            // --------------------------
+            // ----
             if (v1) begin
                 SUB_s2 <= SUB_s1;
 
@@ -324,9 +317,9 @@ module addsub_256 (
                 end
             end
 
-            // --------------------------
+            // ----
             // Stage 3 output register
-            // --------------------------
+            // ----
             if (v2) begin
                 S <= {
                     final_sum_c[15], final_sum_c[14], final_sum_c[13], final_sum_c[12],
