@@ -141,10 +141,10 @@ module ecpd #(
     logic [2:0]   add_recv_cnt;
     logic [2:0]   add_tag0, add_tag1, add_tag2, add_tag3;
 
-    // =====================================================
+    // ====
     // Direct mult_top interface
     // Bỏ mult_wrap, bỏ A_vec/B_vec/S_vec/R_vec.
-    // =====================================================
+    // ====
     logic         mult_start;
     logic [255:0] mult_A_in;
     logic [255:0] mult_B_in;
