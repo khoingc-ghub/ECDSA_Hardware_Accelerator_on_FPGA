@@ -113,9 +113,9 @@ module ecpa #(
     mul_phase_t mul_phase_r;
     add_phase_t add_phase_r;
 
-    // =====================================================
+    // ====
     // Curve/input registers
-    // =====================================================
+    // ====
     logic [255:0] P_r;
     logic [255:0] IP_r;
     logic [51:0]  N0_prime_52_r;
@@ -128,9 +128,9 @@ module ecpa #(
     logic [255:0] Y2_r;
     logic [255:0] Z2_r;
 
-    // =====================================================
+    // ====
     // ECPA internal registers
-    // =====================================================
+    // ====
     logic [255:0] Z1Z1_r;
     logic [255:0] Z2Z2_r;
     logic [255:0] Z1Z2_r;
@@ -170,10 +170,10 @@ module ecpa #(
     assign Y3_out = Y3_r;
     assign Z3_out = Z3_r;
 
-    // =====================================================
+    // ====
     // Direct mult_top interface
     // Bỏ mult_wrap, bỏ A_vec/B_vec/R_vec.
-    // =====================================================
+    // ====
     logic         mult_start;
     logic [255:0] mult_A_in;
     logic [255:0] mult_B_in;
@@ -191,9 +191,9 @@ module ecpa #(
     logic         mult_can_issue;
     assign mult_can_issue = (mult_load_idx != 2'd0) || !mult_busy;
 
-    // =====================================================
+    // ====
     // Addsub pipeline interface
-    // =====================================================
+    // ====
     logic [255:0] add_A_c;
     logic [255:0] add_B_c;
     logic         add_SUB_c;
@@ -207,10 +207,10 @@ module ecpa #(
     logic [2:0]   add_tag0, add_tag1, add_tag2, add_tag3;
     logic         add_v0, add_v1, add_v2, add_v3;
 
-    // =====================================================
+    // ====
     // Direct mult_top instance
     // Dựa theo mult_top stream-output hiện tại.
-    // =====================================================
+    // ====
     mult_top #(
         .DEPTH(DEPTH)
     ) U_STAGE_MUL (
@@ -246,9 +246,9 @@ module ecpa #(
         .done  (add_done)
     );
 
-    // =====================================================
+    // ====
     // Chọn input trực tiếp cho mult_top theo state + index
-    // =====================================================
+    // ====
     always_comb begin
         mult_start = 1'b0;
         mult_A_in  = 256'd0;
@@ -256,13 +256,13 @@ module ecpa #(
         mult_N_in  = P_r;
 
         case (state)
-            // -------------------------------------------------
+            // ----
             // BA:
             // 0: Z1Z1 = Z1 * Z1
             // 1: Z2Z2 = Z2 * Z2
             // 2: Z1Z2 = Z1 * Z2
             // 3: dummy
-            // -------------------------------------------------
+            // ----
             ST_BA_START: begin
                 if (mult_can_issue) begin
                     mult_start = 1'b1;
@@ -291,13 +291,13 @@ module ecpa #(
                 end
             end
 
-            // -------------------------------------------------
+            // ----
             // BB:
             // 0: U1     = X1 * Z2Z2
             // 1: U2     = X2 * Z1Z1
             // 2: Z1CUBE = Z1 * Z1Z1
             // 3: Z2CUBE = Z2 * Z2Z2
-            // -------------------------------------------------
+            // ----
             ST_BB_START: begin
                 if (mult_can_issue) begin
                     mult_start = 1'b1;
@@ -326,12 +326,12 @@ module ecpa #(
                 end
             end
 
-            // -------------------------------------------------
+            // ----
             // BC:
             // 0: S1 = Y1 * Z2CUBE
             // 1: S2 = Y2 * Z1CUBE
             // 2,3: dummy
-            // -------------------------------------------------
+            // ----
             ST_BC_START: begin
                 if (mult_can_issue) begin
                     mult_start = 1'b1;
@@ -355,13 +355,13 @@ module ecpa #(
                 end
             end
 
-            // -------------------------------------------------
+            // ----
             // BE:
             // 0: HH = H * H
             // 1: RR = R * R
             // 2: Z3 = Z1Z2 * H
             // 3: dummy
-            // -------------------------------------------------
+            // ----
             ST_BE_START: begin
                 if (mult_can_issue) begin
                     mult_start = 1'b1;
@@ -390,12 +390,12 @@ module ecpa #(
                 end
             end
 
-            // -------------------------------------------------
+            // ----
             // BF:
             // 0: G = H * HH
             // 1: V = U1 * HH
             // 2,3: dummy
-            // -------------------------------------------------
+            // ----
             ST_BF_START: begin
                 if (mult_can_issue) begin
                     mult_start = 1'b1;
@@ -419,12 +419,12 @@ module ecpa #(
                 end
             end
 
-            // -------------------------------------------------
+            // ----
             // BH:
             // 0: S1G = S1 * G
             // 1: RVX = R * VX
             // 2,3: dummy
-            // -------------------------------------------------
+            // ----
             ST_BH_START: begin
                 if (mult_can_issue) begin
                     mult_start = 1'b1;
@@ -550,9 +550,9 @@ module ecpa #(
         endcase
     end
     
-    // =====================================================
+    // ====
     // Main FSM
-    // =====================================================
+    // ====
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             state          <= ST_IDLE;
@@ -636,10 +636,10 @@ module ecpa #(
             add_tag2 <= add_tag1;
             add_tag3 <= add_tag2;
             
-            // =====================================================
+// ====
 // MULT result commit
 // Không dùng state để ghi reg 256-bit nữa
-// =====================================================
+// ====
 if (mult_R_valid) begin
     case (mul_phase_r)
         MUL_BA: begin
@@ -701,10 +701,9 @@ if (mult_R_valid) begin
     end
 end
 
-// =====================================================
+// ====
 // ADD result commit
-// Không dùng state để ghi reg 256-bit nữa
-// =====================================================
+// ====
 if (add_done) begin
     case (add_phase_r)
         ADD_HR: begin
@@ -740,9 +739,9 @@ if (add_done) begin
 end
                 
             case (state)
-                // =================================================
+                // ====
                 // IDLE
-                // =================================================
+                // ====
                 ST_IDLE: begin
                     busy          <= 1'b0;
                     mult_load_idx <= 2'd0;
@@ -767,9 +766,9 @@ end
                     end
                 end
 
-                // =================================================
+                // ====
                 // BA: Z1Z1, Z2Z2, Z1Z2
-                // =================================================
+                // ====
                 ST_BA_START: begin
                     if (mult_can_issue) begin
                         if (mult_load_idx == 2'd0)
@@ -794,9 +793,9 @@ end
                     end
                 end
 
-                // =================================================
+                // ====
                 // BB: U1, U2, Z1CUBE, Z2CUBE
-                // =================================================
+                // ====
                 ST_BB_START: begin
                     if (mult_can_issue) begin
                         if (mult_load_idx == 2'd0)
@@ -821,9 +820,9 @@ end
                     end
                 end
 
-                // =================================================
+                // ====
                 // BC: S1, S2
-                // =================================================
+                // ====
                 ST_BC_START: begin
                     if (mult_can_issue) begin
                         if (mult_load_idx == 2'd0)
@@ -847,10 +846,10 @@ end
                     end
                 end
 
-                // =================================================
+                // ====
                 // H = U1 - U2
                 // R = S1 - S2
-                // =================================================
+                // ====
                 ST_H_LOAD: begin
                     add_issue_idx <= 3'd0;
                     add_recv_cnt  <= 3'd0;
@@ -877,9 +876,9 @@ end
                     end
                 end
 
-                // =================================================
+                // ====
                 // BE: HH, RR, Z3
-                // =================================================
+                // ====
                 ST_BE_START: begin
                     if (mult_can_issue) begin
                         if (mult_load_idx == 2'd0)
@@ -904,9 +903,9 @@ end
                     end
                 end
 
-                // =================================================
+                // ====
                 // BF: G, V
-                // =================================================
+                // ====
                 ST_BF_START: begin
                     if (mult_can_issue) begin
                         if (mult_load_idx == 2'd0)
@@ -930,12 +929,12 @@ end
                     end
                 end
 
-                // =================================================
+                // ====
                 // twoV = V + V
                 // tmpX = RR + G
                 // X3   = tmpX - twoV
                 // VX   = V - X3
-                // =================================================
+                // ====
                 ST_2V_LOAD: begin
                     add_issue_idx <= 3'd0;
                     add_recv_cnt  <= 3'd0;
@@ -1002,9 +1001,9 @@ end
                     end
                 end
 
-                // =================================================
+                // ====
                 // BH: S1G, RVX
-                // =================================================
+                // ====
                 ST_BH_START: begin
                     if (mult_can_issue) begin
                         if (mult_load_idx == 2'd0)
@@ -1028,9 +1027,9 @@ end
                     end
                 end
 
-                // =================================================
+                // ====
                 // Y3 = RVX - S1G
-                // =================================================
+                // ====
                 ST_Y3_LOAD: begin
                     add_issue_idx <= 3'd0;
                     add_recv_cnt  <= 3'd0;
@@ -1051,9 +1050,9 @@ end
                     end
                 end
 
-                // =================================================
+                // ====
                 // FINAL special cases
-                // =================================================
+                // ====
                 ST_FINAL: begin
                     if ((Z1_r == 256'd0) && (Z2_r == 256'd0)) begin
                         X3_r <= 256'd0;
